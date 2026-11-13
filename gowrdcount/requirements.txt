@@ -1,0 +1,5 @@
+# gowordcount_unpacker requirements
+# The decoder itself is pure stdlib. pefile is used to walk the loader's
+# section table (call-site signature scan, RVA -> file offset) and to
+# summarise the recovered payload.
+pefile>=2023.2.7

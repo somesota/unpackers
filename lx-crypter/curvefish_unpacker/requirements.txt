@@ -1,0 +1,7 @@
+# The cipher chain (Base91, Threefish, PBKDF2, X25519, PKCS7) uses only the stdlib.
+
+# Reads the host sample and LfdReader.dll (manifest resources, #US heap, FieldRva):
+dnfile>=0.15.0
+
+# DES-CBC for the protected resources of LfdReader.dll (crypto_obfuscator.py):
+pycryptodome>=3.18.0
