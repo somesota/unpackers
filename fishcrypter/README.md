@@ -1,4 +1,4 @@
-# curvefish_unpacker
+# fishcrypter_unpacker
 
 Offline decryptor for the stage-3 PE embedded in an IBar2Double-chain host loader
 reference samples: 
@@ -48,7 +48,7 @@ pip install 'dnfile>=0.15.0' 'pycryptodome>=3.18.0'
 
 
 ```bash
-python curvefish_unpacker.py 22.exe -o stage3.exe --save-config config.json
+python fishcrypter_unpacker.py 22.exe -o stage3.exe --save-config config.json
 ```
 
 That's the whole workflow. On success it writes `stage3.exe` and logs:
@@ -107,7 +107,7 @@ not a real trailing-byte situation.
 Override the extracted password with `--password`:
 
 ```bash
-python curvefish_unpacker.py 22.exe --password "MY_NEW_PASSWORD" -o stage3_variant.exe
+python fishcrypter_unpacker.py 22.exe --password "MY_NEW_PASSWORD" -o stage3_variant.exe
 ```
 
 A different build may also use a different Base91 alphabet or different constant
@@ -136,24 +136,24 @@ piece by hand), the original two-step, lower-level interface is still available:
 
 ```bash
 # 1) Extract constants from a standalone LfdReader.dll
-python curvefish_unpacker.py \
+python fishcrypter_unpacker.py \
     --extract-constants LfdReader.dll \
     --save-config config.json
 
 # 2) Decrypt using a ciphertext obtained some other way
-python curvefish_unpacker.py \
+python fishcrypter_unpacker.py \
     -c config.json \
     --ciphertext-file ciphertext.txt \
     -o stage3.exe
 
 # Or pass the Base91 string directly on the command line
-python curvefish_unpacker.py \
+python fishcrypter_unpacker.py \
     -c config.json \
     --ciphertext ":{pHKUAm27..." \
     -o stage3.exe
 
 # Or from an already-decoded binary (e.g. from a hex dump or CAPE artifact)
-python curvefish_unpacker.py \
+python fishcrypter_unpacker.py \
     -c config.json \
     --ciphertext-file cipher.bin \
     -o stage3.exe
@@ -181,7 +181,7 @@ logged, for performance). The list of Base91-looking heap candidates is logged
 without `-v`, at warning level:
 
 ```bash
-python curvefish_unpacker.py 22.exe -o out.exe -v
+python fishcrypter_unpacker.py 22.exe -o out.exe -v
 ```
 
 ---
@@ -284,7 +284,7 @@ and needed no changes — only the *key* fed into it was wrong.
 
 | File | Description |
 |---|---|
-| `curvefish_unpacker.py` | Main script — the stage-3 cipher (layer 3) |
+| `fishcrypter_unpacker.py` | Main script — the stage-3 cipher (layer 3) |
 | `crypto_obfuscator.py` | Internal dependency, no CLI of its own — layer 2, defeats CryptoObfuscator's protection on `LfdReader.dll` to produce this tool's `ThreefishParams` |
 | `requirements.txt` | Python dependencies |
 | `config.json.template` | Template config for manual `--extract-constants` mode |

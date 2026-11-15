@@ -1,11 +1,11 @@
-"""netzipper_unpacker — extract the ZIP payload from a NetZipper-wrapped .NET sample.
+"""netzippacker_unpacker — extract the ZIP payload from a NetZipPacker-wrapped .NET sample.
 
-NetZipper is the outer wrapper of the IBar2Double family. It has no cipher.
+NetZipPacker is the outer wrapper of the IBar2Double family. It has no cipher.
 It carries the payload as a ZIP in a .NET manifest resource (e.g. `22.exe`),
 extracts it with `ZipFile.ExtractToDirectory` and starts it with `Process.Start`.
 This tool pulls that ZIP out and writes its files.
 
-It is independent of `curvefish_unpacker`, which handles the other delivery path
+It is independent of `fishcrypter_unpacker`, which handles the other delivery path
 (a Threefish-256-CBC blob embedded as a Base91 string). Neither tool needs the other.
 
 How to recognise a build: the PDB path contains `LX_CRYPTER\\Temp\\<token>\\`,
@@ -19,7 +19,7 @@ Reference samples:
   Chain    CryptOne -> GCleaner PPI -> GCleaner update DLL -> IBar2Double
 
 Usage:
-  python netzipper_unpacker.py <sample_path> [-o output_dir] [-v]
+  python netzippacker_unpacker.py <sample_path> [-o output_dir] [-v]
 """
 
 from __future__ import annotations
@@ -39,9 +39,9 @@ import dnfile  # parses .NET metadata; `pe.net.resources` lists the manifest res
 # Constants
 # ---------------------------------------------------------------------------
 
-PROCESSING_NAME = "netzipper_unpacker"
+PROCESSING_NAME = "netzippacker_unpacker"
 VERSION = 2  # v2: renamed from ibar2double_unpacker.py to correctly identify
-             # this as the NetZipper (not CryptoObfuscator) delivery layer.
+             # this as the NetZipPacker (not CryptoObfuscator) delivery layer.
              # No functional change -- ZIP extraction only, same as before.
 
 logger = logging.getLogger(PROCESSING_NAME)
@@ -83,10 +83,10 @@ def get_raw_resources(pe: dnfile.dnPE) -> list[tuple[str, bytes]]:
 
     # A native (non-.NET) PE parses fine under dnfile but has no CLR metadata,
     # so pe.net is None and pe.net.resources would raise AttributeError. This
-    # is the common case (most runnable samples are native) — an NetZipper
+    # is the common case (most runnable samples are native) — an NetZipPacker
     # sample is always .NET — so decline cleanly instead of crashing the task.
     if getattr(pe, "net", None) is None:
-        logger.info("no .NET/CLR metadata — not an NetZipper (.NET) sample")
+        logger.info("no .NET/CLR metadata — not an NetZipPacker (.NET) sample")
         return results
 
     clr_resources = pe.net.resources
@@ -186,13 +186,13 @@ def extract_zip_payloads(zip_resources: list[tuple[str, bytes]],
 # ---------------------------------------------------------------------------
 
 def unpack(filepath: str | Path, output_dir: str | Path | None = None) -> list[ExtractedPayload]:
-    """Run the NetZipper ZIP-extraction path on a sample.
+    """Run the NetZipPacker ZIP-extraction path on a sample.
 
     Extracts a ZIP archive delivered as a manifest resource (e.g. containing
     ``22.exe``).
 
     Args:
-        filepath: Path to the NetZipper-wrapped .NET PE sample.
+        filepath: Path to the NetZipPacker-wrapped .NET PE sample.
         output_dir: Directory for extracted payloads.  Defaults to
                      ``<sample_dir>/unpacked/``.
 
@@ -208,7 +208,7 @@ def unpack(filepath: str | Path, output_dir: str | Path | None = None) -> list[E
         output_dir = filepath.parent / "unpacked"
     output_dir = Path(output_dir)
 
-    logger.info("netzipper_unpacker v%d — processing %s", VERSION, filepath.name)
+    logger.info("netzippacker_unpacker v%d — processing %s", VERSION, filepath.name)
     logger.info("Output directory: %s", output_dir)
 
     # Step 1: Parse .NET PE
@@ -221,7 +221,7 @@ def unpack(filepath: str | Path, output_dir: str | Path | None = None) -> list[E
     # Step 2: Enumerate embedded manifest resources (raw bytes only)
     resources = get_raw_resources(pe)
     if not resources:
-        logger.error("No raw embedded resources found — is this an NetZipper sample?")
+        logger.error("No raw embedded resources found — is this an NetZipPacker sample?")
         return []
 
     # Step 3: Find ZIP resources
@@ -251,12 +251,12 @@ def unpack(filepath: str | Path, output_dir: str | Path | None = None) -> list[E
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="netzipper_unpacker — extract embedded ZIP payloads from "
-                    "NetZipper-wrapped .NET loaders",
+        description="netzippacker_unpacker — extract embedded ZIP payloads from "
+                    "NetZipPacker-wrapped .NET loaders",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=__doc__,
     )
-    parser.add_argument("sample", help="Path to the NetZipper-wrapped .NET PE sample")
+    parser.add_argument("sample", help="Path to the NetZipPacker-wrapped .NET PE sample")
     parser.add_argument("-o", "--output", default=None,
                         help="Output directory for extracted payloads "
                              "(default: <sample_dir>/unpacked/)")

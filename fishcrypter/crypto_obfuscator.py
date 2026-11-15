@@ -2,7 +2,7 @@
 
 CryptoObfuscator is a commercial .NET protector. It hides the integer constants
 of `LfdReader.dll` in a table stored as DES+Deflate-protected resources. This
-module decodes that table and returns `ThreefishParams` for `curvefish_unpacker`,
+module decodes that table and returns `ThreefishParams` for `fishcrypter_unpacker`,
 its only caller. It decrypts no payload.
 
 Algorithm (two layers, same decoder):
@@ -49,7 +49,7 @@ VERSION = 1
 logger = logging.getLogger(PROCESSING_NAME)
 
 # Threefish C240 key-schedule constant (Skein spec). Defined here and imported by
-# curvefish_unpacker. It is also the sanity check for the constant table: the table
+# fishcrypter_unpacker. It is also the sanity check for the constant table: the table
 # holds it at byte offset 288 in every build seen.
 TF_C240: int = 0x1BD11BDAA9FC1A22
 

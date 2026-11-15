@@ -1,4 +1,4 @@
-"""gowordcount_unpacker — decode the embedded PE from the GoWordCount Go packer.
+"""gorkcrypter_unpacker — decode the embedded PE from the GorkCrypter Go packer.
 
 The packer keeps its payload as an encrypted blob in `.rdata`. At startup
 `main.main` copies the blob to the stack with `REP MOVSQ`, loads a 32-bit key
@@ -20,15 +20,15 @@ Decoder: six in-place passes, all mod 256, `i` = byte index:
 PE32+ image, mapped in memory by the packer and never written to disk.
 
 Usage:
-  gowordcount_unpacker.py <sample> [-o payload.exe] [--save-config cfg.json] [-v]
-  gowordcount_unpacker.py <sample> --blob-offset 0x191d46 --length 0x4ba40 \
+  gorkcrypter_unpacker.py <sample> [-o payload.exe] [--save-config cfg.json] [-v]
+  gorkcrypter_unpacker.py <sample> --blob-offset 0x191d46 --length 0x4ba40 \
         --key 0xcfa97 --prefix 910d -o payload.exe        # manual mode
 
 Exit codes: 0 = `MZ` recovered, 1 = error or call site not found,
 2 = decoded but not `MZ`.
 
 Reference builds: `21768f84…` (prefix, key `0xCFA97`) and `b10c774e…` (no prefix,
-key `0x7E404`). Details are in `KB/gowordcount/README.md`.
+key `0x7E404`). Details are in `KB/gorkcrypter/README.md`.
 """
 
 from __future__ import annotations
@@ -48,7 +48,7 @@ import pefile
 # Constants
 # ---------------------------------------------------------------------------
 
-PROCESSING_NAME = "gowordcount_unpacker"
+PROCESSING_NAME = "gorkcrypter_unpacker"
 VERSION = 2  # v2: generalized to match both prefixed (MIX1) and no-prefix (MIX2) call sites
 
 # The decoy sentence every obfuscated function in this loader family embeds.
@@ -292,7 +292,7 @@ def unpack_bytes(data: bytes, params: LoaderParams) -> UnpackResult:
 def unpack_data(data: bytes, manual: LoaderParams | None = None) -> UnpackResult | None:
     """Unpack from raw bytes already in memory. Returns None if no call site
     could be found. This is the entry point the karton service uses (no temp
-    file needed, unlike netzipper_unpacker/curvefish_unpacker's dnfile-backed
+    file needed, unlike netzippacker_unpacker/fishcrypter_unpacker's dnfile-backed
     parsers) — :func:`unpack` is a thin file-reading wrapper around it.
     """
     if manual is not None:
@@ -373,7 +373,7 @@ def _int(s: str) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="gowordcount_unpacker — recover the embedded PE from the "
+        description="gorkcrypter_unpacker — recover the embedded PE from the "
                     "'go code counts words' Go loader",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=__doc__,

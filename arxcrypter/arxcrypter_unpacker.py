@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-arxstream_unpacker.py — offline decryptor for the custom RC4-KSA/AES-GF(2^8)
+arxcrypter_unpacker.py — offline decryptor for the custom RC4-KSA/AES-GF(2^8)
 -inverse/SHA-256-IV-ARX stream cipher documented in
 malware-kb/reports/5541bf99ebfee0f4c9ab33624b49e125348bf02280b9efbb8824919f53c8630c/reverse.md
 (the crypter/packer that arrives as GCleaner's 64-bit "update" payload).
@@ -32,7 +32,7 @@ side-effect-free cipher subroutine and its pure-computation callees.
 
 Usage
 -----
-    arxstream_unpacker.py <sample_path> [-o OUTPUT] [--save-config CONFIG.JSON] [-v]
+    arxcrypter_unpacker.py <sample_path> [-o OUTPUT] [--save-config CONFIG.JSON] [-v]
 
 Exit codes (matches this project's other unpackers): 0 = MZ recovered,
 1 = error, 2 = decrypted but not MZ-headed.

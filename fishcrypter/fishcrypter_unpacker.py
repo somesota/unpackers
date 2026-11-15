@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""curvefish_unpacker.py — decrypt the stage-3 payload of an IBar2Double host sample.
+"""fishcrypter_unpacker.py — decrypt the stage-3 payload of an IBar2Double host sample.
 
 The host embeds a Base91 string, a password and `LfdReader.dll`. This tool
 reimplements `IBar2Double.ADXPlot.Benchmark()` offline to decrypt that string.
@@ -18,7 +18,7 @@ Algorithm:
 README.md has the byte layouts and the reasoning behind each step.
 
 Usage:
-  python curvefish_unpacker.py <host_file> [-o stage3.exe] [--password PW] [--save-config run.json] [-v]
+  python fishcrypter_unpacker.py <host_file> [-o stage3.exe] [--password PW] [--save-config run.json] [-v]
 """
 
 from __future__ import annotations
@@ -52,7 +52,7 @@ from crypto_obfuscator import (
     find_manifest_resource,
 )
 
-PROCESSING_NAME = "curvefish_unpacker"
+PROCESSING_NAME = "fishcrypter_unpacker"
 VERSION = 1
 
 logger = logging.getLogger(PROCESSING_NAME)
